@@ -1,4 +1,5 @@
 mod build_ebpf;
+mod build;
 mod run;
 
 use std::process::exit;
@@ -14,6 +15,7 @@ pub struct Options {
 #[derive(Debug, Parser)]
 enum Command {
     BuildEbpf(build_ebpf::Options),
+    Build(build::Options),
     Run(run::Options),
 }
 

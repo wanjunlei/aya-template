@@ -9,7 +9,7 @@ aya-log-ebpf = "0.1.0"
 {{ project-name }}-common = { path = "../{{ project-name }}-common" }
 
 [[bin]]
-name = "{{ project-name }}"
+name = "{{ project-name }}-ebpf"
 path = "src/main.rs"
 
 [profile.dev]

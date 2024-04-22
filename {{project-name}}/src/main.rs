@@ -1,3 +1,6 @@
+use std::env::args;
+use std::path::Path;
+
 {% case program_type -%}
 {%- when "kprobe", "kretprobe" -%}
 use aya::programs::KProbe;
@@ -70,6 +73,12 @@ async fn main() -> Result<(), anyhow::Error> {
 {% endif %}
     env_logger::init();
 
+    let args: Vec<String> = env::args().collect();
+    let mut ebpf_file_path = DEFAULT_EBPF_OBJECT_FILE_PATH;
+    if args.len() >= 2 {
+        ebpf_file_path = &args[1];
+    }
+
     // Bump the memlock rlimit. This is needed for older kernels that don't use the
     // new memcg based accounting, see https://lwn.net/Articles/837122/
     let rlim = libc::rlimit {
@@ -87,12 +96,10 @@ async fn main() -> Result<(), anyhow::Error> {
     // reach for `Bpf::load_file` instead.
     #[cfg(debug_assertions)]
     let mut bpf = Bpf::load(include_bytes_aligned!(
-        "../../target/bpfel-unknown-none/debug/{{project-name}}"
+        "../../target/bpfel-unknown-none/debug/{{project-name}}-ebpf"
     ))?;
     #[cfg(not(debug_assertions))]
-    let mut bpf = Bpf::load(include_bytes_aligned!(
-        "../../target/bpfel-unknown-none/release/{{project-name}}"
-    ))?;
+    let mut bpf = Ebpf::load_file(Path::new(ebpf_file_path))?;
     if let Err(e) = BpfLogger::init(&mut bpf) {
         // This can happen if you remove all log statements from your eBPF program.
         warn!("failed to initialize eBPF logger: {}", e);
