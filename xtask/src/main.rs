@@ -26,6 +26,7 @@ fn main() {
     let ret = match opts.command {
         BuildEbpf(opts) => build_ebpf::build_ebpf(opts),
         Run(opts) => run::run(opts),
+        Build(opts) => build::build(opts),
     };
 
     if let Err(e) = ret {

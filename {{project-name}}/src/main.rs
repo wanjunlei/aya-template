@@ -1,4 +1,5 @@
-use std::env::args;
+use std::env;
+#[cfg(not(debug_assertions))]
 use std::path::Path;
 
 {% case program_type -%}
@@ -49,6 +50,8 @@ use clap::Parser;
 {% endif -%}
 use log::{info, warn, debug};
 use tokio::signal;
+
+const DEFAULT_EBPF_OBJECT_FILE_PATH: &str = "./{{project-name}}-ebpf";
 
 {% if program_types_with_opts contains program_type -%}
 #[derive(Debug, Parser)]
