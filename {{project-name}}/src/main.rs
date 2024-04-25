@@ -43,7 +43,9 @@ use aya::programs::SocketFilter;
 {%- when "raw_tracepoint" -%}
 use aya::programs::RawTracePoint;
 {%- endcase %}
-use aya::{include_bytes_aligned, Bpf};
+#[cfg(debug_assertions)]
+use aya::include_bytes_aligned;
+use aya::Bpf;
 use aya_log::BpfLogger;
 {% if program_types_with_opts contains program_type -%}
 use clap::Parser;
