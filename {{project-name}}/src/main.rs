@@ -102,7 +102,7 @@ async fn main() -> Result<(), anyhow::Error> {
         "../../target/bpfel-unknown-none/debug/{{project-name}}-ebpf"
     ))?;
     #[cfg(not(debug_assertions))]
-    let mut bpf = Ebpf::load_file(Path::new(ebpf_file_path))?;
+    let mut bpf = Bpf::load_file(Path::new(ebpf_file_path))?;
     if let Err(e) = BpfLogger::init(&mut bpf) {
         // This can happen if you remove all log statements from your eBPF program.
         warn!("failed to initialize eBPF logger: {}", e);
