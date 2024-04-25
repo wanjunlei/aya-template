@@ -1,6 +1,5 @@
-use std::env;
 #[cfg(not(debug_assertions))]
-use std::path::Path;
+use std::{env, path::Path};
 
 {% case program_type -%}
 {%- when "kprobe", "kretprobe" -%}
@@ -53,6 +52,7 @@ use clap::Parser;
 use log::{info, warn, debug};
 use tokio::signal;
 
+#[cfg(not(debug_assertions))]
 const DEFAULT_EBPF_OBJECT_FILE_PATH: &str = "./{{project-name}}-ebpf";
 
 {% if program_types_with_opts contains program_type -%}
@@ -78,8 +78,11 @@ async fn main() -> Result<(), anyhow::Error> {
 {% endif %}
     env_logger::init();
 
+    #[cfg(not(debug_assertions))] 
     let args: Vec<String> = env::args().collect();
+    #[cfg(not(debug_assertions))] 
     let mut ebpf_file_path = DEFAULT_EBPF_OBJECT_FILE_PATH;
+    #[cfg(not(debug_assertions))] 
     if args.len() >= 2 {
         ebpf_file_path = &args[1];
     }
